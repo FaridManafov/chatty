@@ -3,12 +3,13 @@ import React, { Component } from "react";
 class Chatbar extends Component {
   constructor(props) {
     super(props);
-    console.log(props, "constructor");
   }
 
   sendUsername= e => {
+    if (e.key === "Enter") {
       let usernameInput = e.target.value;
       this.props.sendUsername(usernameInput);
+    }
   };
 
   sendMessage = e => {
