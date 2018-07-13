@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
   // onmessage
   //recieve messages
   ws.on('message', function incoming(data) {
-    console.log(data);
+    console.log(JSON.parse(data));
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
