@@ -31,12 +31,17 @@ wss.on("connection", (ws, req) => {
 
     newMessage.id = uuid()
     console.log(newMessage)
-
+    
     if (newMessage.type === "message") {
-      
-        wss.clients.forEach(user => {
-          user.send(JSON.stringify(newMessage));
-        });
+      wss.clients.forEach(user => {
+        user.send(JSON.stringify(newMessage));
+      });
+    }
+
+    if (newMessage.type === "username"){
+      wss.clients.forEach(user => {
+        user.send(JSON.stringify(newMessage));
+      });
     }
 
   });

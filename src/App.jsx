@@ -9,6 +9,7 @@ class App extends Component {
 
     this.state = {
       currentUser: { name: "Anonymous" },
+      // currentlyOnline: 0,
       messages: []
     };
   }
@@ -19,7 +20,7 @@ class App extends Component {
 
     this.connectSocket.onmessage = (e) => {
       let parsedMessage = JSON.parse(e.data)
-      console.log(parsedMessage, "parsedmsg")
+      console.log(parsedMessage, "before if")
       
       if (parsedMessage.type === "message") {
         let newMessage = {
@@ -37,19 +38,41 @@ class App extends Component {
           mostRecentMessageID: newMessage.id
         })
       }
+      
       if (parsedMessage.type === "username"){
-        console.log("recieved change username")
+        console.log("received change username")
+        let newMessage = {
+          id: parsedMessage.id,
+          oldUsername: parsedMessage.oldUsername,
+          newUsername: parsedMessage.newUsername,
+          type: parsedMessage.type
+        }
+
+        newMessage.notification = `${newMessage.oldUsername} has changed their username to ${newMessage.newUsername}`
+        const updatingMessages = this.state.messages.slice()
+        updatingMessages.push(newMessage)
+        console.log(this.state, "before setting state")
+        this.setState({
+          messages: updatingMessages
+        });
+        // console.log(updatingMessages)
       }
     }
       
   }
 
-  sendUsername = usrContent => {
-    const currentUser = [...this.state.currentUser];
-    currentUser.name = usrContent;
-    this.setState({
-      currentUser: currentUser
-    });
+  sendUsername = usernameInput => {
+    // const currentUser = [...this.state.currentUser];
+    // currentUser.name = usernameInput;
+    const usernameObj = {
+      type: "username",
+      oldUsername: this.state.currentUser.name,
+      newUsername: usernameInput
+    }
+    
+    this.state.currentUser.name = usernameInput
+    this.connectSocket.send(JSON.stringify(usernameObj))
+    
   };
 
   // need to define this in app to update the state
@@ -70,7 +93,6 @@ class App extends Component {
     });
 
     this.connectSocket.send(JSON.stringify(messageObj));
-    console.log(msgContent);
   };
 
   render() {
