@@ -28,11 +28,12 @@ wss.on("connection", (ws, req) => {
   ws.on("message", data => {
 
     let newMessage = JSON.parse(data)
+
     newMessage.id = uuid()
     console.log(newMessage)
 
     if (newMessage.type === "message") {
-        // socketServer.
+      
         wss.clients.forEach(user => {
           user.send(JSON.stringify(newMessage));
         });

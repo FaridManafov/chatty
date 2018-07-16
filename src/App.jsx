@@ -19,8 +19,29 @@ class App extends Component {
 
     this.connectSocket.onmessage = (e) => {
       let parsedMessage = JSON.parse(e.data)
-      console.log(parsedMessage)
+      console.log(parsedMessage, "parsedmsg")
+      
+      if (parsedMessage.type === "message") {
+        let newMessage = {
+          id: parsedMessage.id,
+          username: parsedMessage.data.username,
+          content: parsedMessage.data.content,
+          type: parsedMessage.type
+        }
+        
+        const updatingMessages = this.state.messages.slice()
+        updatingMessages.push(newMessage)
+        
+        this.setState({
+          messages: updatingMessages,
+          mostRecentMessageID: newMessage.id
+        })
+      }
+      if (parsedMessage.type === "username"){
+        console.log("recieved change username")
+      }
     }
+      
   }
 
   sendUsername = usrContent => {
@@ -33,6 +54,7 @@ class App extends Component {
 
   // need to define this in app to update the state
   sendMessage = msgContent => {
+
     const messages = [...this.state.messages];
 
     const messageObj = {
@@ -42,8 +64,6 @@ class App extends Component {
         content: msgContent
       }
     };
-    // messages.push({
-    // });
 
     this.setState({
       messages: messages
