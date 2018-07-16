@@ -16,30 +16,11 @@ class App extends Component {
   componentDidMount() {
     //server
     this.connectSocket = new WebSocket("ws://0.0.0.0:3001");
-    
-    this.connectSocket.onopen = () => {
-      console.log("sending message");
-      this.connectSocket.send("Testing message from App");
-      // this.connectSocket.send(JSON.stringify(msgContent))
 
-    };
-
-    //    this.connectSocket.onsomething = function() {
-    
-
-    // setTimeout(() => {
-    //   console.log("Simulating incoming message");
-    //   // Add a new message to the list of messages in the data store
-    //   const newMessage = {
-    //     id: 3,
-    //     username: "Michelle",
-    //     content: "Hello there!"
-    //   };
-    //   const messages = this.state.messages.concat(newMessage);
-    //   // Update the state of the app component.
-    //   // Calling setState will trigger a call to render() in App and all child components.
-    //   this.setState({ messages: messages });
-    // }, 3000);
+    this.connectSocket.onmessage = (e) => {
+      let parsedMessage = JSON.parse(e.data)
+      console.log(parsedMessage)
+    }
   }
 
   sendUsername = usrContent => {
@@ -53,23 +34,23 @@ class App extends Component {
   // need to define this in app to update the state
   sendMessage = msgContent => {
     const messages = [...this.state.messages];
-    
-    const messageObj = {
-      username: this.state.currentUser.name,
-      content: msgContent
 
-    }
+    const messageObj = {
+      type: "message",
+      data: {
+        username: this.state.currentUser.name,
+        content: msgContent
+      }
+    };
     // messages.push({
     // });
-    
+
     this.setState({
       messages: messages
     });
 
-    this.connectSocket.send(JSON.stringify(messageObj))
-    console.log(msgContent)
-    
-    
+    this.connectSocket.send(JSON.stringify(messageObj));
+    console.log(msgContent);
   };
 
   render() {
@@ -85,5 +66,6 @@ class App extends Component {
     );
   }
 }
+
 export default App;
 // onKeyPress = {}/>
