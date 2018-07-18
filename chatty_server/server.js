@@ -23,7 +23,15 @@ const wss = new SocketServer({ server });
 wss.on("connection", (ws, req) => {
 
   console.log("Client connected");
-  
+  let userOnline = {
+    type: "connection",
+    data: wss.clients.size
+  }
+
+  wss.clients.forEach((user) => {
+    user.send(JSON.stringify(userOnline))
+  })
+
   //receive messages
   ws.on("message", data => {
 
@@ -31,6 +39,9 @@ wss.on("connection", (ws, req) => {
 
     newMessage.id = uuid()
     console.log(newMessage)
+
+    // console.log(userOnline)
+    //users online thrown
     
     if (newMessage.type === "message") {
       wss.clients.forEach(user => {
@@ -47,5 +58,15 @@ wss.on("connection", (ws, req) => {
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on("close", () => console.log("Client disconnected"));
+  ws.on("close", () => {
+    console.log("Client disconnected")
+    let userOnline = {
+      type: "connection",
+      data: wss.clients.size
+    }
+  
+    wss.clients.forEach((user) => {
+      user.send(JSON.stringify(userOnline))
+    })
+  });
 });

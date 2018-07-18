@@ -38,6 +38,13 @@ body {
   flex: 2;
 }
 
+.usernameContent{
+  font-weight: bold;
+  color: black;
+  margin-left: 20px;
+  margin-top: 18px;
+}
+
 .message {
   display: flex;
   padding: 5px;
@@ -73,6 +80,15 @@ body {
   position: fixed;
   right: 0;
   top: 0;
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    font-size: 18px;
+    margin-top: 18px;
+    margin-right: 15px;
+  }
+
 }
 
 .navbar-brand {

@@ -14,16 +14,3 @@ export default function MessageList(props) {
   )
 }
 
-// class MessageList extends Component {
-//   render() {
-//     const showMessages = () => {
-//       this.props.messages.forEach((msg) => {
-//         return <div>{msg}</div>
-//       })
-//     }
-//     return (
-//       <div className="message system"> {showMessages}</div>
-//     );
-//   }
-// }
-

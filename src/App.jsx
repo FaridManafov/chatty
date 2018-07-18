@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Chatbar from "./Chatbar.jsx";
-// import Message from "./Message.jsx";
 import MessageList from "./MessageList.jsx";
+import Navbar from "./Navbar.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -9,7 +9,7 @@ class App extends Component {
 
     this.state = {
       currentUser: { name: "Anonymous" },
-      // currentlyOnline: 0,
+      currentlyOnline: 0,
       messages: []
     };
   }
@@ -20,7 +20,7 @@ class App extends Component {
 
     this.connectSocket.onmessage = (e) => {
       let parsedMessage = JSON.parse(e.data)
-      console.log(parsedMessage, "before if")
+      console.log(parsedMessage, "Parsed Message")
       
       if (parsedMessage.type === "message") {
         let newMessage = {
@@ -37,9 +37,8 @@ class App extends Component {
           messages: updatingMessages,
           mostRecentMessageID: newMessage.id
         })
-      }
-      
-      if (parsedMessage.type === "username"){
+        
+      } else if (parsedMessage.type === "username"){
         console.log("received change username")
         let newMessage = {
           id: parsedMessage.id,
@@ -51,11 +50,15 @@ class App extends Component {
         newMessage.notification = `${newMessage.oldUsername} has changed their username to ${newMessage.newUsername}`
         const updatingMessages = this.state.messages.slice()
         updatingMessages.push(newMessage)
-        console.log(this.state, "before setting state")
+        
         this.setState({
           messages: updatingMessages
         });
-        // console.log(updatingMessages)
+
+      } else if (parsedMessage.type === "connection"){
+        this.setState({
+          currentlyOnline: parsedMessage.data
+        })
       }
     }
       
@@ -98,7 +101,10 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Navbar usersOnline={this.state.currentlyOnline} />
+       
         <MessageList messages={this.state.messages} />
+
         <Chatbar
           name={this.state.currentUser.name}
           sendUsername={this.sendUsername}
