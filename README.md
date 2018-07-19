@@ -5,11 +5,6 @@ A client side chat website that leverages ReactJS and Webpack
 
 ### Usage
 
-Clone the boilerplate and create your own git repo.
-
-```
-```
-
 Install the dependencies and start the server.
 
 ```
